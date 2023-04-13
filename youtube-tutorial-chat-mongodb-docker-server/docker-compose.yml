@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    container_name: server-web-youtube-tutorial-chat-mongodb
+    command: yarn dev
+    volumes:
+      - /app
+      - /app/node_modules
+    ports:
+      - "3024:4024"
+        # MongoDB services
+  mongo_db:
+    container_name: mongodb-youtube-tutorial-chat-mongodb
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_db:/data/db
+  api:
+    build: .
+    container_name: server-api-youtube-tutorial-chat-mongodb
+    ports:
+      - "4024:3024"
+    environment:
+      PORT: 3024
+      MONGODB_URI: mongodb://mongo_db:27017/chat
+      NAME: Aleksandr
+    depends_on:
+      - mongo_db  
+    volumes:
+      - /app
+      - /app/node_modules
+volumes:
+  mongo_db: {}
